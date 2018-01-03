@@ -1,7 +1,8 @@
 package com.playtika.carproxy.service;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.List;
 
 public interface CarProxyService {
-    public void processCarDealsFile(String url) throws FileNotFoundException;
+    List<String> processCarDealsFile(String url) throws IOException;
 }
