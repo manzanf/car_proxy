@@ -4,5 +4,5 @@ import java.io.IOException;
 import java.util.List;
 
 public interface CarProxyService {
-    List<String> processCarDealsFile(String url) throws IOException;
+    List<String> addCarDeals(String url) throws IOException;
 }
