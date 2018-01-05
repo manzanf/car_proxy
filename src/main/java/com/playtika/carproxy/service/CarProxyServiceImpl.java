@@ -1,23 +1,23 @@
 package com.playtika.carproxy.service;
 
+import com.playtika.carproxy.carshop.CarShopRestClient;
 import com.playtika.carproxy.domain.Car;
 import com.playtika.carproxy.domain.CarWithSaleInfo;
 import com.playtika.carproxy.domain.SaleInfo;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.util.List;
 
 @Slf4j
+@AllArgsConstructor
 @Service
 public class CarProxyServiceImpl implements CarProxyService {
-    @Override
-    public List<String> addCarDeals(String url) throws IOException {
-        return null;
-    }
+    CarShopRestClient carShopClient;
 
-    public List<String> processCarDealsFile(String url) throws IOException {
+    @Override
+    public void processCarDealsFile(String url) throws IOException {
         File file = new File(url);
         if (!file.isFile()) {
             log.error("There is no file for this path");
@@ -25,11 +25,10 @@ public class CarProxyServiceImpl implements CarProxyService {
         }
         try (InputStream is = new FileInputStream(file);
              BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
-            return br.lines()
+            br.lines()
                     .skip(1)   // header of the csv file
                     .map(this::toCarDeal)
-                    .forEach(cd -> CarShopRestClient.addCarDeals(cd));
-                    //.collect(Collectors.toList());
+                    .forEach(cd -> carShopClient.addCarDeals(cd.getCar(), cd.getSaleInfo().getPrice(), cd.getSaleInfo().getSellerContacts()));
         } catch (IOException e) {
             log.error("The file {} cannot be processed", url, e);
             throw new IOException("The file cannot be processed");
@@ -42,6 +41,5 @@ public class CarProxyServiceImpl implements CarProxyService {
         SaleInfo saleInfo = new SaleInfo(columns[4], Long.parseLong(columns[3]));
         return new CarWithSaleInfo(car, saleInfo);
     }
-
 
 }
