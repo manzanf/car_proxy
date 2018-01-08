@@ -2,15 +2,12 @@ package com.playtika.carproxy.web;
 
 import com.playtika.carproxy.service.CarProxyService;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 @RestController
-@RequestMapping(value = "/cardeals", produces = "application/json")
 public class CarProxyController {
     private final CarProxyService service;
 
@@ -18,8 +15,8 @@ public class CarProxyController {
         this.service = service;
     }
 
-    @PostMapping
-    public void processCarDealsFile(@RequestParam("fileUrl") String url) throws FileNotFoundException, IOException {
+    @PostMapping(value = "/cars", produces = "application/json")
+    public void processCarDealsFile(@RequestParam("fileUrl") String url) throws IOException {
         service.processCarDealsFile(url);
     }
 }

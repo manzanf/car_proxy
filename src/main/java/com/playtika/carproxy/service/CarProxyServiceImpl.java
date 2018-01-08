@@ -20,6 +20,7 @@ public class CarProxyServiceImpl implements CarProxyService {
     public void processCarDealsFile(String url) throws IOException {
         File file = new File(url);
         if (!file.isFile()) {
+
             log.error("There is no file for this path");
             throw new FileNotFoundException("There is no file for this path");
         }
@@ -38,7 +39,7 @@ public class CarProxyServiceImpl implements CarProxyService {
     private CarWithSaleInfo toCarDeal(String line) {
         String[] columns = line.split("\\s*,\\s*");
         Car car = new Car(columns[0], columns[1]);
-        SaleInfo saleInfo = new SaleInfo(columns[4], Long.parseLong(columns[3]));
+        SaleInfo saleInfo = new SaleInfo(columns[3], Long.parseLong(columns[2]));
         return new CarWithSaleInfo(car, saleInfo);
     }
 
