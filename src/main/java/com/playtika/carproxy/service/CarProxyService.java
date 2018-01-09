@@ -1,7 +1,8 @@
 package com.playtika.carproxy.service;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface CarProxyService {
-    void processCarDealsFile(String url) throws IOException;
+    List<Long> processCarDealsFile(String url) throws IOException;
 }

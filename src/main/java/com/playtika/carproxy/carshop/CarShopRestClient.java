@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient("CarDealService")
 public interface CarShopRestClient {
     @PostMapping(value = "/cars", produces = "application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
-    boolean addCarDeals(@RequestBody Car car,
+    Long addCarDeals(@RequestBody Car car,
                         @RequestParam("price") long price,
                         @RequestParam("sellerContacts") String sellerContacts);
 }
