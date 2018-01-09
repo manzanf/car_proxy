@@ -16,7 +16,7 @@ public class CarProxyController {
         this.service = service;
     }
 
-    @PostMapping(value = "/cardeals", produces = "application/json")
+    @PostMapping(value = "/cardeals", produces = "application/json") ////ifFilePathIsIncorrectFileNotFoundException and 500, map to smth
     public List<Long> processCarDealsFile(@RequestParam("fileUrl") String url) throws IOException {
         return service.processCarDealsFile(url);
     }
