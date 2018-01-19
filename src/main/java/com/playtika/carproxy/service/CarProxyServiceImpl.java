@@ -3,12 +3,15 @@ package com.playtika.carproxy.service;
 import com.playtika.carproxy.carshop.CarShopRestClient;
 import com.playtika.carproxy.domain.Car;
 import com.playtika.carproxy.domain.CarWithSaleInfo;
+import com.playtika.carproxy.domain.ClosingCarDealResponse;
 import com.playtika.carproxy.domain.SaleInfo;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.rmi.NoSuchObjectException;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,6 +47,26 @@ public class CarProxyServiceImpl implements CarProxyService {
         }
     }
 
+    @Override
+    public Long addPurchase(long carDealId, long price) throws NoSuchObjectException {
+        Long id = carShopClient.addPurchase(carDealId, price).getBody();
+        if (id == null) {
+            log.warn("There is no corresponding car deal with id {}, purchase claim was not added", carDealId);
+            throw new NoSuchObjectException("There is no corresponding car deal, purchase claim was not added");
+        }
+        return id;
+    }
+
+    @Override
+    public boolean rejectPurchaseClaim(long id) {
+        return ifRejectSucceed(id);
+    }
+
+    @Override
+    public ClosingCarDealResponse acceptBestPurchaseClaim(long carDealId) {
+        return carShopClient.acceptBestPurchaseClaim(carDealId);
+    }
+
     private Optional<Long> retrieveCarDealId(CarWithSaleInfo cd) {
         Long id = carShopClient.addCarDeals(cd.getCar(), cd.getSaleInfo().getPrice(),
                 cd.getSaleInfo().getSellerContacts()).getBody();
@@ -60,4 +83,7 @@ public class CarProxyServiceImpl implements CarProxyService {
         return new CarWithSaleInfo(car, saleInfo);
     }
 
+    private boolean ifRejectSucceed(long id) {
+        return carShopClient.rejectPurchaseClaim(id).getStatusCode() == HttpStatus.OK;
+    }
 }
